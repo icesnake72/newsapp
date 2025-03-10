@@ -2,11 +2,11 @@
 {% load static %}
 {% block title %}My News Service{% endblock %}
 
-{% block container %}
-  <h1>News Service</h1>
-
-  <div class="news-container">
-    
+{% block container %} 
+  <div class="page-title">
+    <h1>News Service</h1>
+  </div>
+  <div class="news-container">        
     {% for article in news %}
       <div class="news-card">
         
@@ -23,8 +23,13 @@
         </div>
       </div>
     {% endfor %}
-
   </div>  
+
+  {% if is_paginated %}
+    <div>
+      {% include 'components/pagination.html' %}
+    </div>    
+  {% endif %}
   
 {% endblock %}
 

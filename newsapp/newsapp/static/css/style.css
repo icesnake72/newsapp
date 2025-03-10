@@ -1,3 +1,10 @@
+/* 페이지 타이틀 */
+.page-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+
 /* 카드 컨테이너 스타일 */
 .news-container {
   display: flex;
