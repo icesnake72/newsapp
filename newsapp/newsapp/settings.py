@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',    
     'newsapp',  # 기본앱을 등록시킴
+    'accounts', # accounts 앱을 등록시킴
 ]
 
 MIDDLEWARE = [
