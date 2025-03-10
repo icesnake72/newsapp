@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}My News Service{% endblock %}
+
+{% block container %}
+  <h1>News Service</h1>
+
+  <div class="news-container">
+    
+    {% for article in news %}
+      <div class="news-card">
+        
+        {% if article.url_to_image %}
+          <img src="{{ article.url_to_image }}" alt="">
+        {% else %}
+          <img src="{% static 'images/news.webp' %}" alt="">
+        {% endif %}
+
+        <div class="news-content">
+            <h3>{{ article.title }}</h3>
+            <p>{{ article.description }}</p>
+            <a href="{{ article.url }}" target="_blank">기사 보기</a>
+        </div>
+      </div>
+    {% endfor %}
+
+  </div>  
+  
+{% endblock %}
+
