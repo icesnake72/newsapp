@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}회원가입{% endblock %}
+
+{% block container %}
+<div class="container mt-5" style="max-width: 500px;">
+  <h2 class="mb-4 text-center">회원가입</h2>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="username" class="form-label">아이디</label>
+      <input type="text" class="form-control" id="username" name="UserName" placeholder="아이디를 입력하세요" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">이메일</label>
+      <input type="email" class="form-control" id="email" name="UserEmail" placeholder="이메일을 입력하세요" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">비밀번호</label>
+      <input type="password" class="form-control" id="password" name="UserPassword" placeholder="비밀번호를 입력하세요" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="password2" class="form-label">비밀번호 확인</label>
+      <input type="password" class="form-control" id="password2" name="UserPasswordConf" placeholder="비밀번호를 다시 입력하세요" required>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+    {% endif %}
+
+    <div class="d-grid">
+      <button type="submit" class="btn btn-primary">회원가입</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+<!-- 
+<form action="" method="post">
+  {% csrf_token %}
+  <input type="text" name="UserName" placeholder="아이디를 입력하세요" required>
+  <input type="eamil" name="UserEmail" placeholder="이메일을 입력하세요" required>
+  <input type="password" name="UserPassword" placeholder="비밀번호를 입력하세요" required>
+  <input type="password" name="UserPasswordConf" placeholder="비밀번호를 확인하세요" required>
+  <button type="submit">회원가입</button>
+</form>
+-->
