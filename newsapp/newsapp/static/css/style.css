@@ -1,56 +1,166 @@
 /* 페이지 타이틀 */
-.page-title {
-  text-align: center;
+.page-header {
+  display: flex;
+  justify-content: space-between;  
   margin-top: 2rem;
   margin-bottom: 2rem;
+  padding: 1.25rem;
 }
 
+.page-title {  
+  color: #333;
+}
+
+.page-title h1 {
+  font-size: 2.5rem;
+  margin: 0;
+}
+.page-title h2 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.filter-container {
+  display: flex;
+  gap: 0.5rem;  
+  padding: 1.25rem;
+  justify-content: space-between;
+}
+
+/* .input-group {
+  min-width: 200px;
+  max-width: 30%;
+  white-space: nowrap;
+} */
+
+.search-btn {
+  background-color: #262626;
+  color: #fff;
+}
+
+.search-btn:hover {
+  background-color: #484848;
+  color: #fff;
+}
+
+.fixed-width-dropdown {
+  min-width: 200px;  /* 최소 너비를 적절히 지정 (예: 가장 긴 카테고리명 기준) */
+  max-width: 300px;  /* 너무 길어지는 것 방지 */
+  white-space: nowrap; /* 줄바꿈 방지 */
+  background-color: #262626;
+}
+
+.fixed-width-dropdown .dropdown-menu {
+  width: 100%;  /* 버튼과 같은 폭 */
+  min-width: unset; /* Bootstrap 기본값 해제 */
+}
+
+.account-info {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.account-info a {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+  background-color: #262626;
+  color: #fff;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.account-info a:hover {
+  background-color: #3936e5;  
+}
 
 /* 카드 컨테이너 스타일 */
 .news-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  padding: 20px;
+  gap: 1.0rem;
+  justify-content: space-between; /* 카드를 가로로 균등하게 배치 */
+  padding: 1.25rem;
+  flex-direction: row; /* 카드가 가로로 배치되도록 설정 */
 }
+
 
 /* 각 뉴스 카드 스타일 */
 .news-card {
-  width: 300px;
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 0.75rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: transform 0.3s ease-in-out;
+  flex: 1 1 calc(25% - 1.25rem); /* 기본 4열 */
+  max-width: calc(25% - 1.25rem);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .news-card:hover {
   transform: translateY(-5px);
 }
 
+.news-card-footer {
+  display: flex;
+  justify-content: flex-start;
+  padding: 1rem;  
+  margin-top: auto;
+}
+/* 뉴스 카드 링크 스타일 */
+.news-card-link {
+  border-radius: 0.5rem;
+  padding: 0.3rem 1rem;
+  background-color: #ebf2ff;
+  text-decoration: none;  
+  color: #3d3d73;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.news-card-link:hover {
+  background-color: #cfe2ff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 /* 뉴스 이미지 */
 .news-card img {
   width: 100%;
-  height: 180px;
+  height: 11.25rem;
   object-fit: cover;
 }
 
 /* 뉴스 내용 */
 .news-content {
-  padding: 15px;
+  padding: 1rem;
+  flex-grow: 1;
 }
 
 .news-content h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 1rem;
+  margin-bottom: 0.625rem;
   color: #333;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .news-content p {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .news-content a {
@@ -65,12 +175,68 @@
   color: #0056b3;
 }
 
-/* ai */
-/* opean ai ---> text generation, fine-tunning, function calling  */
-/* pytorch, tensorflow */
+/* 뉴스 메타 정보 */
+.news-meta {
+  font-size: 0.75rem;
+  color: #999;
+  margin-top: 0.625rem;
+}
 
-/* AWS, GCP */
-/* docker, kubernetes, 가상화 */
+.news-meta p {
+  color: #3f5b82; /* 블루-그레이 계열 */
+  margin: 2px 0;
+  font-size: 1em;
+}
 
-/* CI / CD */
-/* git / github */
+.news-meta p span.label {
+  color: #1F2937; /* 진한 네이비 계열 (Tailwind gray-800) */
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+/* Paginator */
+.pagination .page-link {
+  color: #3f5b82; /* 회색 글자 (gray-500) */
+  background-color: #ffffff; /* 흰 배경 */
+  border: none; /* 테두리 없애기 */
+  /* border: 1px solid #D1D5DB; 연한 회색 테두리 (gray-300) */
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #3f5b82; /* 진한 회색 (gray-700) */
+  color: white; /* 흰 글자 */
+  /* border-color: #374151; 테두리도 동일 색 */
+  border: none; /* 테두리 없애기 */
+  border-radius: 0.7rem; /* 둥근 테두리 */
+}
+
+.pagination .page-link:hover {
+  color: #374151; /* hover 시 더 진한 회색 */
+  background-color: #F3F4F6; /* 연한 회색 배경 (gray-100) */
+  border-color: #D1D5DB; /* 테두리 유지 */
+  border-radius: 0.7rem; /* 둥근 테두리 */
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #9CA3AF; /* 연한 회색 (gray-400) */
+  background-color: #F9FAFB; /* 거의 흰색 배경 */
+  border-color: #E5E7EB; /* 약간 진한 회색 테두리 */
+}
+
+
+/* 반응형 레이아웃 설정 */
+/* 화면이 1024px 이하일 때: 가로 2개 */
+@media (max-width: 1024px) {
+  .news-card {
+    flex: 1 1 calc(50% - 1.25rem);
+    max-width: calc(50% - 1.25rem);
+  }
+}
+
+/* 화면이 640px 이하일 때: 가로 1개 */
+@media (max-width: 640px) {
+  .news-card {
+    flex: 1 1 calc(100% - 1.25rem);
+    max-width: calc(100% - 1.25rem);
+  }
+}

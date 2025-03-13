@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, logout, login
 
 # request method : GET, POST, PUT, DELETE, UPDATE
 
@@ -46,9 +47,46 @@ def signup(request):
     return HttpResponse(template.render(context, request))
     
   
-def login(request):
-  pass
+def login_(request):
+  '''로그인'''
+  if request.method == "GET":
+    return render(request, "login.html")
+  
+  elif request.method == "POST":
+    username = request.POST.get("UserName")
+    password = request.POST.get("UserPassword")
+    try:
+      user = authenticate(username=username, password=password)
+      if user is not None:
+        login(request, user)        
+        return redirect("index")
+      else:
+        print("user is None")
+        return render(request, "login.html", {'error': '로그인 실패'})
+    except Exception as e:
+      print("Error: ", e)
+      template = loader.get_template("login.html")
+      context = {
+        'error': '로그인 실패'
+      }
+      return HttpResponse(template.render(context, request))
+  else:
+    template = loader.get_template("login.html")
+    context = {
+      'error': '잘못된 접근입니다.'
+    }
+    return HttpResponse(template.render(context, request))
 
 
-def logout(request):
-  pass
+def logout_(request):
+  '''로그아웃'''
+  if request.method == "GET":
+    print(request.user)
+    logout(request)
+    return redirect("index")
+  else:
+    template = loader.get_template("index.html")
+    context = {
+      'error': '잘못된 접근입니다.'
+    }
+    return HttpResponse(template.render(context, request))
