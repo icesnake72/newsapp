@@ -335,3 +335,43 @@
     /* max-width: calc(100% - 1.25rem); */
   }
 }
+
+/* Sticky footer 스타일 */
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  flex: 1;
+}
+
+.footer {
+  margin-top: 3rem; /* 상단 마진 추가 */
+  width: 100%;
+  background-color: #f8f9fa; /* bg-body-tertiary와 동일한 색상 */
+  padding: 1.25rem 1.25rem;  
+}
+
+.footer .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;  
+  padding: 1.25rem;  
+}
+
+.footer .container .contact {
+  display: flex;
+  justify-content: start;
+  gap: 1rem;
+  flex-direction: row;
+}
+
+.footer a {
+  color: #333;
+  text-decoration: none;
+}

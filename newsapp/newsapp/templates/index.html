@@ -19,7 +19,7 @@
             <h3>{{ article.title }}</h3>
             <p>{{ article.description }}</p>
             <div class="news-meta">
-              <p><span class="label">카테고리:</span> 
+              <p><span class="label">카테고리:</span>
                 <a class="news-meta-link" href="{% url 'category_news' article.category.id %}">{{ article.category.name }}</a>
               </p>
               <p><span class="label">출처:</span> 
@@ -34,9 +34,16 @@
             </div>
         </div>
         <div class="news-card-footer">
-          <a href="{{ article.url }}" target="_blank" class="news-card-link">
-            기사보기
-          </a>
+          {% if user.is_authenticated %}
+            <a href="{{ article.url }}" target="_blank" class="news-card-link">
+              기사보기
+            </a>  
+          {% else %}
+            <a href="{% url 'login' %}" class="news-card-link">
+              로그인하고 기사보기
+            </a>
+          {% endif %}
+          
         </div>
       </div>
     {% endfor %}
