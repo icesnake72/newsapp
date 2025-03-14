@@ -1,9 +1,10 @@
-!{% extends "base.html" %}
+{% extends "base.html" %}
 {% load static %}
 {% block title %}로그인{% endblock %}
 
 {% block container %}
-<div class="container mt-5" style="max-width: 40%;">
+<div class="container mt-5" style="max-width: 500px;">
+  {% include "components/homelink.html" %}
   <h2 class="mb-4 text-center">로그인</h2>
 
   <form method="post" novalidate>
@@ -28,12 +29,9 @@
     <div class="d-grid">
       <button type="submit" class="btn btn-primary">로그인</button>
     </div>
-  </form>
-  
-  <div class="d-grid">
-    <a href="{% url 'signup' %}" class="btn btn-primary">회원가입</a>
-  </div>
+  </form> 
 
+  {% include "components/links.html" %}
 </div>
 {% endblock %}
 

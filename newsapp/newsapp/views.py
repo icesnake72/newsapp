@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.template import loader
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q  # Q 객체 import 필수
 from newsapp.models import Articles, Category
 import pytz
 from datetime import datetime
@@ -9,7 +10,7 @@ def index(request):
   print(request.user)
   # select * from articles;
   # 기사들을 최신 순으로 정렬하여 가져온다.
-  articles = Articles.objects.all().order_by("-created_at") # 아직 쿼리 실행되지 않음 (lazy)
+  articles = Articles.objects.all().order_by("-published_at") # 아직 쿼리 실행되지 않음 (lazy)
   return render_articles(request, articles)
 
   
@@ -27,7 +28,7 @@ def render_articles(request, articles, category=None):
   
   # 한국 시간대로 변환 및 형식 지정
   kst = pytz.timezone('Asia/Seoul')
-  for article in articles:
+  for article in articles_page:
     if isinstance(article.published_at, str):
       article.published_at = datetime.fromisoformat(article.published_at.replace('Z', '+00:00'))
     article.published_at = article.published_at.astimezone(kst)
@@ -48,13 +49,36 @@ def render_articles(request, articles, category=None):
 
 
 
-def category_news(request, category_id):
+def category_articles(request, category_id):
   print(request.user)
   # select * from articles where category_id = category_id;
-  articles = Articles.objects.filter(category_id=category_id).order_by("-created_at")
+  articles = Articles.objects.filter(category_id=category_id).order_by("-published_at")
   
   category = Category.objects.get(id=category_id)
   
   return render_articles(request, articles, category)
+
+
+
+
+def search_articles(request):
+    query = request.GET.get("q")
+    category_id = request.GET.get("category_id")
+    
+    if query:
+        # 검색어가 있을 때만 조건 적용
+        q_objects = Q(title__icontains=query) | Q(content__icontains=query) | Q(description__icontains=query)
+        
+        if category_id:
+            # 카테고리까지 함께 필터링
+            articles = Articles.objects.filter(q_objects, category_id=category_id).order_by("-published_at")
+        else:
+            articles = Articles.objects.filter(q_objects).order_by("-published_at")
+    else:
+        # 검색어가 없을 경우 빈 쿼리셋 반환 (원한다면 전체 기사 반환 가능)
+        articles = Articles.objects.none()
+    
+    return render_articles(request, articles)
+  
   
   

@@ -4,6 +4,7 @@
 
 {% block container %}
 <div class="container mt-5" style="max-width: 500px;">
+  {% include "components/homelink.html" %}
   <h2 class="mb-4 text-center">회원가입</h2>
 
   <form method="post" novalidate>
@@ -39,9 +40,8 @@
       <button type="submit" class="btn btn-primary">회원가입</button>
     </div>
   </form>
-  <div class="d-grid">
-    <a href="{% url 'login' %}" class="btn btn-primary mt-3">로그인</a>
-  </div>
+  
+  {% include "components/links.html" %}
 </div>
 {% endblock %}
 

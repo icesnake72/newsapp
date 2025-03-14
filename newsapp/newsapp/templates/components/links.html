@@ -1,0 +1,25 @@
+<div class="global-links">
+  <div class="global-link">
+    <a href="{% url 'index' %}">
+      HOME
+    </a>
+  </div>
+  |
+  <div class="global-link">
+    {% if '/signup/' in request.path %}
+      <a href="{% url 'login' %}">
+        로그인
+      </a>
+    {% else %}
+      <a href="{% url 'signup' %}">
+        회원가입
+      </a>
+    {% endif %}
+  </div>
+  |
+  <div class="global-link">
+    <a href="{% url 'index' %}">
+      비밀번호 찾기
+    </a>
+  </div>
+</div>

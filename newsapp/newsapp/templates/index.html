@@ -3,59 +3,9 @@
 {% block title %}My News Service{% endblock %}
 
 {% block container %}
-  <div class="page-header">
-    <div class="page-title">
-      <h1>News Service</h1>
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle fixed-width-dropdown" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-          {% if selected_category %}
-            {{ selected_category.name }}
-          {% else %}
-            전체 카테고리
-          {% endif %}
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <li><a class="dropdown-item" href="/">전체</a></li> <!-- 전체 보기 링크 -->
-          {% for category in categories %}
-            <li>
-              <a 
-                class="dropdown-item {% if selected_category and selected_category.id == category.id %}active{% endif %}" 
-                href="{% url 'category_news' category.id %}">
-                {{ category.name }}
-              </a>
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>    
-    <div class="account-info">
-      {% if user.is_authenticated %}
-        <a href="#">
-          <i class="bi bi-person-circle"></i>&nbsp;{{ user.username }}
-        </a>
-        <a href="{% url 'logout' %}">          
-          <i class="bi bi-box-arrow-right"></i>&nbsp;로그아웃
-        </a>
-      {% else %}
-        <a href="accounts/signup">
-          <i class="bi bi-person-fill-add"></i>&nbsp;회원가입
-        </a>
-        <a href="accounts/login">
-          <i class="bi bi-box-arrow-in-right"></i>&nbsp;로그인
-        </a>
-      {% endif %}
-    </div>
-  </div>
+  {% include 'components/header.html' %}
 
-  <div class="filter-container col-lg-6 col-sm-12">
-    <form class="d-flex justify-content-between" action="">
-      <div class="input-group me-2">
-        <span class="input-group-text" id="inputGroup-sizing-default">검색</span>
-        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-      </div>      
-      <button type="submit" class="btn search-btn">검색</button>
-    </form>    
-  </div>
+  {% include 'components/search.html' %}
 
   <div class="news-container"> 
     {% for article in news %}
@@ -70,9 +20,15 @@
             <p>{{ article.description }}</p>
             <div class="news-meta">
               <p><span class="label">카테고리:</span> 
-                <a href="{% url 'category_news' article.category.id %}">{{ article.category.name }}</a>
+                <a class="news-meta-link" href="{% url 'category_news' article.category.id %}">{{ article.category.name }}</a>
               </p>
-              <p><span class="label">출처:</span> {{ article.source.name }}</p>              
+              <p><span class="label">출처:</span> 
+                {% if article.source.url %}
+                  <a href="{{ article.source.url }}" target="_blank">{{ article.source.name }}</a>
+                {% else %}
+                  {{ article.source.name }}
+                {% endif %}
+              </p>              
               <p><span class="label">작성자:</span> {{ article.author }}</p>              
               <p>{{ article.published_at }}</p>
             </div>
