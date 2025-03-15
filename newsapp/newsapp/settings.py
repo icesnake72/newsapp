@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import pymysql
+import os
 pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +28,15 @@ SECRET_KEY = 'django-insecure-3z6t2pow3-ba!-$$!7&!)lf5c6_f#1lq9i=e0ht#c$ulw3c@)q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'nginx']  # 허용하는 호스트 설정
+
+# HTTPS 리다이렉션 비활성화
+SECURE_SSL_REDIRECT = False
+
+# 쿠키 보안 설정 비활성화 (HTTP에서도 쿠키 전송 허용)
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
 
 # 브라우저 종료 시 세션 만료
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -131,6 +140,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_DIR = BASE_DIR / 'newsapp/static'
 STATICFILES_DIRS = [STATIC_DIR]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
