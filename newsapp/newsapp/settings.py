@@ -30,6 +30,11 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+# seconds 단위 (예: 30분 = 1800초)
+SESSION_COOKIE_AGE = 1800  # 30분
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
 # Application definition
 
 INSTALLED_APPS = [

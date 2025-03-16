@@ -1,0 +1,48 @@
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+
+    {# 이전 페이지 #}
+    {% if news.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ news.previous_page_number }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span> <!-- << 기호 -->
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </span>
+      </li>
+    {% endif %}
+
+    {# 페이지 번호 표시 (전체 페이지 순회) #}
+    {% for num in news.paginator.page_range %}
+      {% if num == news.number %}
+        <li class="page-item active">
+          <span class="page-link">{{ num }}</span>
+        </li>
+      {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+
+    {# 다음 페이지 #}
+    {% if news.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ news.next_page_number }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span> <!-- >> 기호 -->
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </span>
+      </li>
+    {% endif %}
+
+  </ul>
+</nav>
