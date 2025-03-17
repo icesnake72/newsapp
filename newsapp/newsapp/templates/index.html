@@ -7,6 +7,12 @@
 
   {% include 'components/search.html' %}
 
+  <div class="position-fixed bottom-0 end-0 mb-3 me-3" style="z-index: 9999;">
+    <button class="btn btn-primary py-2" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">      
+      <span>TOP</span>
+    </button>    
+  </div>
+
   <div class="news-container"> 
     {% for article in news %}
       <div class="news-card">        
@@ -60,4 +66,3 @@
 {% block script %}  
   <script src="{% static 'js/index.js' %}"></script>
 {% endblock %}
-
