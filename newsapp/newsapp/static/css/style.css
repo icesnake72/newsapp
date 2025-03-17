@@ -334,6 +334,18 @@
     max-width: 100%;
     /* max-width: calc(100% - 1.25rem); */
   }
+
+  .account-info a {
+    font-size: 0; /* 글자 숨기기 */
+  }
+
+  .account-info a i {
+    font-size: 1.5rem; /* 아이콘은 보이도록 */
+  }
+
+  .filter-container .category-filter {
+    width: 100%;    
+  }
 }
 
 /* Sticky footer 스타일 */

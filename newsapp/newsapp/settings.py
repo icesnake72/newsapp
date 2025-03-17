@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
 import pymysql
 import os
 pymysql.install_as_MySQLdb()
@@ -19,6 +20,13 @@ pymysql.install_as_MySQLdb()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+# .env 파일 로드
+dotenv_path = os.path.join(BASE_DIR, '.env.dev' if os.getenv('DJANGO_ENV') == 'development' else '.env.prod')
+load_dotenv(dotenv_path)
+
+# 확인
+print("Loaded DB_HOST:", os.getenv('DB_HOST'))  # 서버 시작 시 확인용
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -26,9 +34,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3z6t2pow3-ba!-$$!7&!)lf5c6_f#1lq9i=e0ht#c$ulw3c@)q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'nginx']  # 허용하는 호스트 설정
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.123.114', 'nginx']  # 허용하는 호스트 설정
 
 # HTTPS 리다이렉션 비활성화
 SECURE_SSL_REDIRECT = False
@@ -94,11 +102,11 @@ WSGI_APPLICATION = 'newsapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'NAME': 'newsdb',
-        'USER' : 'root',
-        'PASSWORD' : '1234',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
@@ -125,25 +133,34 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
-USE_I18N = True
+USE_I18N = True # 다국어 지원
 
-USE_TZ = True
+USE_TZ = True # 시간대 사용
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# 정적 파일 url
+STATIC_URL = '/static/'
+
+# 정적 파일 디렉토리
 STATIC_DIR = BASE_DIR / 'newsapp/static'
+
+# 정적 파일 설정
 STATICFILES_DIRS = [STATIC_DIR]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# 정적 파일 루트
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # ✅ 절대 경로
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+print("STATIC_ROOT:", STATIC_ROOT)
+print("DJANGO_ENV:", os.getenv('DJANGO_ENV'))

@@ -1,0 +1,45 @@
+# version: '3.8'
+
+services:
+  db:
+    image: mysql:9.0
+    environment:
+      MYSQL_DATABASE: newsdb      
+      MYSQL_ROOT_PASSWORD: 1234      
+    ports:
+      - "3306:3306"
+    volumes:
+      # MySQL 데이터베이스 파일을 호스트에 저장
+      - mysql_data:/var/lib/mysql   
+      # MySQL 초기 데이터베이스 파일을 호스트에 저장
+      # MySQL의 공식 docker-entrypoint.sh 스크립트는 컨테이너가 처음 실행될 때 /docker-entrypoint-initdb.d/ 디렉터리에 있는 모든 .sql 파일을 자동으로 실행합니다.
+      - ./newsdb_backup.sql:/docker-entrypoint-initdb.d/newsdb_backup.sql
+    networks:
+      - mynetwork
+
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+
+    image: news_web:latest
+    container_name: news_web
+    restart: always
+    
+    # 개발중에만 사용 / 배포용으로는 주석처리
+    # volumes:
+    #   - .:/app
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+    env_file:
+      - .env.prod  
+
+networks:
+  mynetwork:
+
+volumes:
+  mysql_data:

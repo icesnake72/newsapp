@@ -4,11 +4,17 @@ FROM python:3.11-slim
 # 작업 디렉터리 설정
 WORKDIR /app
 
+# 환경 파일 복사 (선택, 컨테이너 내부에서 사용 시)
+COPY .env.prod /app/.env.prod
+
+# 환경 변수 설정
+ENV DJANGO_ENV=production
+
 # 의존성 복사 및 설치
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 소스 코드 복사
+# 앱 복사
 COPY . .
 
 # collectstatic 명령 실행
@@ -18,7 +24,7 @@ RUN python manage.py collectstatic --noinput
 RUN apt-get update && apt-get install -y nginx && apt-get clean
 
 # nginx 설정 복사 (nginx 폴더 내에 nginx.conf 위치 필요)
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # 포트 노출 (nginx 기본 포트)
 EXPOSE 80
