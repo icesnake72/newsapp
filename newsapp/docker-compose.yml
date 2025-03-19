@@ -30,16 +30,33 @@ services:
     # volumes:
     #   - .:/app
     ports:
-      - "80:80"
+      - "8000:8000"
     depends_on:
       - db
     networks:
       - mynetwork
     env_file:
       - .env.prod  
+    volumes:
+      - static_volume:/app/staticfiles  # 공유 static
+      - ./get_news:/app/get_news        # 크롤링 코드 공유
+
+  nginx:
+    image: nginx:latest
+    container_name: news_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/app/staticfiles  # 공유 static
+    depends_on:
+      - web
+    networks:
+      - mynetwork
 
 networks:
   mynetwork:
 
 volumes:
   mysql_data:
+  static_volume:  # ✅ Django와 nginx가 공유하는 볼륨

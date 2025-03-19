@@ -1,0 +1,8 @@
+[
+  { "name": "business", "memo": "경제/금융 뉴스" },
+  { "name": "Sports", "memo": "스포츠" },
+  { "name": "Health", "memo": "건강" },
+  { "name": "Entertainment", "memo": "연예" },
+  { "name": "Technology", "memo": "기술" },
+  { "name": "Science", "memo": "과학" }
+]

@@ -54,7 +54,7 @@ def category_articles(request, category_id):
   # select * from articles where category_id = category_id;
   articles = Articles.objects.filter(category_id=category_id).order_by("-published_at")
   
-  category = Category.objects.get(id=category_id)
+  category = Category.objects.get(id=category_id) # 카테고리 이름을 가져오기 위해
   
   return render_articles(request, articles, category)
 
