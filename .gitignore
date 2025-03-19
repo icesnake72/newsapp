@@ -9,3 +9,11 @@ __pycache__/
 *.pyz.d
 *.pyw.d
 *.pyc.d
+staticfiles/
+media/
+*.zip
+.config.json
+db_config.json
+.env.dev
+.env.prod
+newsapp/get_news/config.json

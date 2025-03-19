@@ -1,0 +1,39 @@
+<div class="filter-container">
+  <div class="category-filter">
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle fixed-width-dropdown" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+        {% if selected_category %}
+          {{ selected_category.name }}
+        {% else %}
+          전체 카테고리
+        {% endif %}
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <li><a class="dropdown-item" href="/">전체</a></li> <!-- 전체 보기 링크 -->
+        {% for category in categories %}
+          <li>
+            <a 
+              class="dropdown-item {% if selected_category and selected_category.id == category.id %}active{% endif %}" 
+              href="{% url 'category_news' category.id %}">
+              {{ category.name }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="filter-divider"></div>
+  <div class="search-box">
+    <form action="{% url 'search_news' %}" method="GET">
+      {% csrf_token %}
+      <div class="search-control">
+        <input type="text" class="form-control" name="q" value="{{request.GET.q}}" placeholder="검색어를 입력하세요" required>
+        <input type="hidden" name="category" value="{{ selected_category.id|default:'' }}">
+        
+        <button type="submit" class="btn search-btn">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </form>    
+  </div>
+</div>

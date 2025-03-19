@@ -4,6 +4,7 @@
 
 {% block container %}
 <div class="container mt-5" style="max-width: 500px;">
+  {% include "components/homelink.html" %}
   <h2 class="mb-4 text-center">로그인</h2>
 
   <form method="post" novalidate>
@@ -14,11 +15,10 @@
       <input type="text" class="form-control" id="username" name="UserName" placeholder="아이디를 입력하세요" required>
     </div>
 
-    
     <div class="mb-3">
       <label for="password" class="form-label">비밀번호</label>
       <input type="password" class="form-control" id="password" name="UserPassword" placeholder="비밀번호를 입력하세요" required>
-    </div>    
+    </div>
 
     {% if error %}
     <div class="alert alert-danger" role="alert">
@@ -28,19 +28,11 @@
 
     <div class="d-grid">
       <button type="submit" class="btn btn-primary">로그인</button>
-      <a class="btn btn-primary mt-2" href="{% url 'signup' %}">회원가입으로 가기</a>
     </div>
-  </form>
+  </form> 
+
+  {% include "components/links.html" %}
 </div>
 {% endblock %}
 
-<!-- 
-<form action="" method="post">
-  {% csrf_token %}
-  <input type="text" name="UserName" placeholder="아이디를 입력하세요" required>
-  <input type="eamil" name="UserEmail" placeholder="이메일을 입력하세요" required>
-  <input type="password" name="UserPassword" placeholder="비밀번호를 입력하세요" required>
-  <input type="password" name="UserPasswordConf" placeholder="비밀번호를 확인하세요" required>
-  <button type="submit">회원가입</button>
-</form>
--->
+

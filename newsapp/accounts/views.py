@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth.models import User
-from django.db.utils import IntegrityError  # 중복된 사용자가 있을 때 발생하는 에러
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, logout, login
 
 # request method : GET, POST, PUT, DELETE, UPDATE
 
@@ -17,10 +16,17 @@ def signup(request):
     username = request.POST.get("UserName")
     useremail = request.POST.get("UserEmail")
     password = request.POST.get("UserPassword")
-    print(username, useremail, password)
+    password2 = request.POST.get("UserPassword2")
     
     try:
       new_user = User.objects.create_user(username, useremail, password)
+      
+      if password != password2:
+        return render(request, 'accounts/signup.html', {'error': '비밀번호가 일치하지 않습니다.'})
+
+      if User.objects.filter(username=username).exists():
+        return render(request, 'accounts/signup.html', {'error': '이미 존재하는 사용자입니다.'})
+      
       new_user.save()
       return redirect("index")
     
@@ -48,23 +54,45 @@ def signup(request):
     
   
 def login_(request):
+  '''로그인'''
   if request.method == "GET":
     return render(request, "login.html")
   
   elif request.method == "POST":
     username = request.POST.get("UserName")
     password = request.POST.get("UserPassword")
-    
-    # auth_user 테이블에 저장된 사용자인지 체크
-    auth_user = authenticate(username=username, password=password)
-    if auth_user is not None:
-      login(request, auth_user)
-      return redirect("index")
-    
-    return redirect("login")
-  
+    try:
+      user = authenticate(username=username, password=password)
+      if user is not None:
+        login(request, user)        
+        return redirect("index")
+      else:
+        print("user is None")
+        return render(request, "login.html", {'error': '로그인 실패'})
+    except Exception as e:
+      print("Error: ", e)
+      template = loader.get_template("login.html")
+      context = {
+        'error': '로그인 실패'
+      }
+      return HttpResponse(template.render(context, request))
+  else:
+    template = loader.get_template("login.html")
+    context = {
+      'error': '잘못된 접근입니다.'
+    }
+    return HttpResponse(template.render(context, request))
 
 
 def logout_(request):
-  logout(request)
-  return redirect("index")  
+  '''로그아웃'''
+  if request.method == "GET":
+    print(request.user)
+    logout(request)
+    return redirect("index")
+  else:
+    template = loader.get_template("index.html")
+    context = {
+      'error': '잘못된 접근입니다.'
+    }
+    return HttpResponse(template.render(context, request))

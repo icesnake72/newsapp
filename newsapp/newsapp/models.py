@@ -21,6 +21,9 @@ class Articles(models.Model):
     source = models.ForeignKey('Sources', models.DO_NOTHING, db_column='source')
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
+    
+    def __str__(self):
+      return self.title
 
     class Meta:
         managed = False
@@ -33,6 +36,9 @@ class Category(models.Model):
     memo = models.CharField(max_length=300, blank=True, null=True)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
+    
+    def __str__(self):
+      return self.name
 
     class Meta:
         managed = False
@@ -50,7 +56,13 @@ class Sources(models.Model):
     country = models.CharField(max_length=10, blank=True, null=True)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
+    
+    def __str__(self):
+      return self.name
 
     class Meta:
         managed = False
         db_table = 'sources'
+        
+        
+
