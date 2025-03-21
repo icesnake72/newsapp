@@ -83,16 +83,9 @@ jobs:
           username: ubuntu
           key_path: lightsail_key.pem  # ✅ 기존에 만든 PEM 파일 사용          
           script: |
+            cd newsapp
             export TAG=${{ github.sha }}
-
-            # 이미지 로드
             sudo docker load < newsapp.tar
-
-            # 기존 컨테이너 중지
             sudo docker-compose -f docker-compose.yml down || true
-
-            # 컨테이너 재기동
             sudo docker-compose -f docker-compose.yml up -d
-
-            # 로그 출력
-            sudo TAG=$TAG docker-compose -f docker-compose.yml logs
+            sudo docker-compose -f docker-compose.yml logs
