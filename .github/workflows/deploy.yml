@@ -47,14 +47,26 @@ jobs:
           aws --version
           aws lightsail get-instance --instance-name ${{ env.LIGHTSAIL_INSTANCE_NAME }}
 
+      - name: Create .env.prod file
+        run: |
+          echo "DJANGO_ENV=production" > .env.prod
+          echo "DEBUG=True" >> .env.prod
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env.prod
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env.prod
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env.prod
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env.prod
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env.prod
+
       - name: Copy Docker image to Lightsail
         run: |
           aws lightsail get-instance-access-details --instance-name ${{ env.LIGHTSAIL_INSTANCE_NAME }} > instance_details.json
           echo "${{ secrets.LIGHTSAIL_SSH_KEY }}" > lightsail_key.pem
           chmod 600 lightsail_key.pem
-          
+
           INSTANCE_IP=$(jq -r '.accessDetails.ipAddress' instance_details.json)
-          scp -o StrictHostKeyChecking=no -i lightsail_key.pem newsapp.tar ubuntu@$INSTANCE_IP:~/
+
+          # newsapp 이미지와 관련 파일 업로드
+          scp -o StrictHostKeyChecking=no -i lightsail_key.pem newsapp.tar .env.prod docker-compose.yml nginx.conf ubuntu@$INSTANCE_IP:~/
 
       - name: Deploy to Lightsail
         uses: appleboy/ssh-action@master
@@ -63,37 +75,16 @@ jobs:
           username: ubuntu
           key_path: lightsail_key.pem  # ✅ 기존에 만든 PEM 파일 사용          
           script: |
-            # 도커 이미지 로드
+            export TAG=${{ github.sha }}
+
+            # 이미지 로드
             sudo docker load < newsapp.tar
 
-            # 먼저 파일을 root로 만들더라도 ubuntu가 읽을 수 있도록 퍼미션 변경
-            sudo touch .env.prod
-            sudo chmod 644 .env.prod
+            # 기존 컨테이너 중지
+            sudo docker-compose -f docker-compose.yml down || true
 
-            sudo docker-compose -f docker-compose.prod.yml down || true
-            # ✅ 수정 코드 (append 모드로 변경)
-            echo "DJANGO_ENV=production" | sudo tee .env.prod > /dev/null
-            echo "DEBUG=True" | sudo tee -a .env.prod > /dev/null
-            echo "DB_NAME=${{ secrets.DB_NAME }}" | sudo tee -a .env.prod > /dev/null
-            echo "DB_USER=${{ secrets.DB_USER }}" | sudo tee -a .env.prod > /dev/null
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" | sudo tee -a .env.prod > /dev/null
-            echo "DB_HOST=${{ secrets.DB_HOST }}" | sudo tee -a .env.prod > /dev/null
-            echo "DB_PORT=${{ secrets.DB_PORT }}" | sudo tee -a .env.prod > /dev/null
+            # 컨테이너 재기동
+            sudo docker-compose -f docker-compose.yml up -d
 
-
-            sudo tee docker-compose.prod.yml > /dev/null << 'EOL'
-            services:
-              web:
-                image: newsapp:${{ github.sha }}
-                ports:
-                  - "8000:8000"
-                env_file:
-                  - .env.prod
-                restart: always
-            networks:
-              default:
-                name: newsapp-network
-            EOL
-
-            sudo docker-compose -f docker-compose.prod.yml up -d
-            sudo docker-compose -f docker-compose.prod.yml logs            
+            # 로그 출력
+            sudo TAG=$TAG docker-compose -f docker-compose.yml logs
