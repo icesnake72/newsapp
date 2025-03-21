@@ -61,7 +61,7 @@ jobs:
         with:
           host: ${{ secrets.LIGHTSAIL_HOST }}
           username: ubuntu
-          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          key_path: lightsail_key.pem  # ✅ 기존에 만든 PEM 파일 사용          
           script: |
             # 도커 이미지 로드
             docker load < newsapp.tar
