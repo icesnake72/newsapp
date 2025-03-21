@@ -54,7 +54,7 @@ jobs:
           chmod 600 lightsail_key.pem
           
           INSTANCE_IP=$(jq -r '.accessDetails.ipAddress' instance_details.json)
-          scp -o StrictHostKeyChecking=no -i lightsail_key.pem newsapp.tar bitnami@$INSTANCE_IP:~/
+          scp -o StrictHostKeyChecking=no -i lightsail_key.pem newsapp.tar ubuntu@$INSTANCE_IP:~/
 
       - name: Deploy to Lightsail
         uses: appleboy/ssh-action@master
