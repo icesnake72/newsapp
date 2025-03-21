@@ -60,7 +60,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.LIGHTSAIL_HOST }}
-          username: bitnami
+          username: ubuntu
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           script: |
             # 도커 이미지 로드
