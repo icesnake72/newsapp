@@ -5,7 +5,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # 환경 파일 복사 (선택, 컨테이너 내부에서 사용 시)
-COPY .env.prod /app/.env.prod
+# COPY .env.prod /app/.env.prod
 
 # 의존성 복사 및 설치
 COPY requirements.txt .
