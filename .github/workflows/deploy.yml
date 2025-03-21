@@ -66,7 +66,10 @@ jobs:
           INSTANCE_IP=$(jq -r '.accessDetails.ipAddress' instance_details.json)
 
           # newsapp 이미지와 관련 파일 업로드
-          scp -o StrictHostKeyChecking=no -i lightsail_key.pem newsapp.tar .env.prod docker-compose.yml nginx.conf ubuntu@$INSTANCE_IP:~/
+          scp -i lightsail_key.pem -o StrictHostKeyChecking=no \
+          newsapp.tar newsapp/docker-compose.yml newsapp/nginx.conf .env.prod \
+          ubuntu@$INSTANCE_IP:~/newsapp/    
+
 
       - name: Deploy to Lightsail
         uses: appleboy/ssh-action@master
