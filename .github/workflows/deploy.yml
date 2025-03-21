@@ -64,21 +64,17 @@ jobs:
           key_path: lightsail_key.pem  # ✅ 기존에 만든 PEM 파일 사용          
           script: |
             # 도커 이미지 로드
-            docker load < newsapp.tar
-            
-            # 기존 컨테이너 중지 및 제거
-            docker-compose -f docker-compose.prod.yml down || true
-            
-            # 환경 변수 파일 생성
-            echo "DB_NAME=${{ secrets.DB_NAME }}" > .env.prod
-            echo "DB_USER=${{ secrets.DB_USER }}" >> .env.prod
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env.prod
-            echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env.prod
-            echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env.prod
-            
-            # docker-compose 파일 생성
-            cat > docker-compose.prod.yml << 'EOL'
-            version: '3.8'
+            sudo docker load < newsapp.tar
+
+            sudo docker-compose -f docker-compose.prod.yml down || true
+
+            echo "DB_NAME=${{ secrets.DB_NAME }}" | sudo tee .env.prod > /dev/null
+            echo "DB_USER=${{ secrets.DB_USER }}" | sudo tee -a .env.prod > /dev/null
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" | sudo tee -a .env.prod > /dev/null
+            echo "DB_HOST=${{ secrets.DB_HOST }}" | sudo tee -a .env.prod > /dev/null
+            echo "DB_PORT=${{ secrets.DB_PORT }}" | sudo tee -a .env.prod > /dev/null
+
+            sudo tee docker-compose.prod.yml > /dev/null << 'EOL'
             services:
               web:
                 image: newsapp:${{ github.sha }}
@@ -91,9 +87,6 @@ jobs:
               default:
                 name: newsapp-network
             EOL
-            
-            # 새 컨테이너 시작
-            docker-compose -f docker-compose.prod.yml up -d
-            
-            # 사용하지 않는 이미지 정리
-            docker image prune -af 
+
+            sudo docker-compose -f docker-compose.prod.yml up -d
+            sudo docker image prune -af
