@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
+from django.db.utils import IntegrityError
 
 # request method : GET, POST, PUT, DELETE, UPDATE
 
