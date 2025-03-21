@@ -74,6 +74,7 @@ jobs:
             echo "DB_HOST=${{ secrets.DB_HOST }}" | sudo tee -a .env.prod > /dev/null
             echo "DB_PORT=${{ secrets.DB_PORT }}" | sudo tee -a .env.prod > /dev/null
 
+
             sudo tee docker-compose.prod.yml > /dev/null << 'EOL'
             services:
               web:
