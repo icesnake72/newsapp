@@ -66,9 +66,13 @@ jobs:
             # 도커 이미지 로드
             sudo docker load < newsapp.tar
 
+            # 먼저 파일을 root로 만들더라도 ubuntu가 읽을 수 있도록 퍼미션 변경
+            sudo touch .env.prod
+            sudo chmod 644 .env.prod
+
             sudo docker-compose -f docker-compose.prod.yml down || true
             # ✅ 수정 코드 (append 모드로 변경)
-            echo "DJANGO_ENV=production" | sudo tee -a .env.prod > /dev/null
+            echo "DJANGO_ENV=production" | sudo tee .env.prod > /dev/null
             echo "DEBUG=True" | sudo tee -a .env.prod > /dev/null
             echo "DB_NAME=${{ secrets.DB_NAME }}" | sudo tee -a .env.prod > /dev/null
             echo "DB_USER=${{ secrets.DB_USER }}" | sudo tee -a .env.prod > /dev/null
