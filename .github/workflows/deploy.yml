@@ -31,6 +31,11 @@ jobs:
           docker save newsapp:${{ github.sha }} > newsapp.tar
           mv newsapp.tar $GITHUB_WORKSPACE/
 
+      - name: Replace ${TAG} in docker-compose.yml
+        run: |
+          sed -i "s/\${TAG}/${{ github.sha }}/g" newsapp/docker-compose.yml
+  
+
       - name: Install AWS CLI and Lightsail Plugin
         run: |
           echo "Checking AWS CLI version..."
