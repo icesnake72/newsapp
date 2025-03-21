@@ -25,6 +25,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Build and tag Docker image
+        working-directory: ./newsapp
         run: |
           docker build -t newsapp:${{ github.sha }} .
           docker save newsapp:${{ github.sha }} > newsapp.tar
