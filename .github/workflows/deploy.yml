@@ -67,9 +67,10 @@ jobs:
             sudo docker load < newsapp.tar
 
             sudo docker-compose -f docker-compose.prod.yml down || true
-            echo "DJANGO_ENV=production" | sudo tee .env.prod > /dev/null
-            echo "DEBUG=True" | sudo tee .env.prod > /dev/null
-            echo "DB_NAME=${{ secrets.DB_NAME }}" | sudo tee .env.prod > /dev/null
+            # ✅ 수정 코드 (append 모드로 변경)
+            echo "DJANGO_ENV=production" | sudo tee -a .env.prod > /dev/null
+            echo "DEBUG=True" | sudo tee -a .env.prod > /dev/null
+            echo "DB_NAME=${{ secrets.DB_NAME }}" | sudo tee -a .env.prod > /dev/null
             echo "DB_USER=${{ secrets.DB_USER }}" | sudo tee -a .env.prod > /dev/null
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" | sudo tee -a .env.prod > /dev/null
             echo "DB_HOST=${{ secrets.DB_HOST }}" | sudo tee -a .env.prod > /dev/null
@@ -91,4 +92,4 @@ jobs:
             EOL
 
             sudo docker-compose -f docker-compose.prod.yml up -d
-            sudo docker image prune -af
+            sudo docker-compose -f docker-compose.prod.yml logs            
