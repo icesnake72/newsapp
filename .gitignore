@@ -17,3 +17,6 @@ db_config.json
 .env.dev
 .env.prod
 newsapp/get_news/config.json
+*.sql
+*.backup
+*.pem
