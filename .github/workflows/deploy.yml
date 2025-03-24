@@ -45,21 +45,21 @@ jobs:
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip -o awscliv2.zip
           
-          echo "Installing or updating AWS CLI..."
+          echo "Installing or updating AWS CLI..."s
           sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
           
           echo "Verifying AWS CLI installation..."
           aws --version
           aws lightsail get-instance --instance-name ${{ env.LIGHTSAIL_INSTANCE_NAME }}
 
-      - name: Prepare .env.prod safely with special characters
+      - name: Prepare .env.prod from base64-encoded secrets
         run: |
           {
             echo "DJANGO_ENV=production"
             echo "DEBUG=True"
             echo "DB_NAME=${{ secrets.DB_NAME }}"
             echo "DB_USER=${{ secrets.DB_USER }}"
-            printf "DB_PASSWORD=%s\n" "${{ secrets.DB_PASSWORD }}"
+            echo -n "DB_PASSWORD="; echo "${{ secrets.DB_PASSWORD }}" | base64 -d
             echo "DB_HOST=${{ secrets.DB_HOST }}"
             echo "DB_PORT=${{ secrets.DB_PORT }}"
           } > .env.prod
