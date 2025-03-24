@@ -59,7 +59,7 @@ jobs:
             echo "DEBUG=True"
             echo "DB_NAME=${{ secrets.DB_NAME }}"
             echo "DB_USER=${{ secrets.DB_USER }}"
-            echo -n "DB_PASSWORD="; echo "${{ secrets.DB_PASSWORD }}" | base64 -d
+            printf "DB_PASSWORD=%s\n" "$(echo "${{ secrets.DB_PASSWORD }}" | base64 -d)"
             echo "DB_HOST=${{ secrets.DB_HOST }}"
             echo "DB_PORT=${{ secrets.DB_PORT }}"
           } > .env.prod
