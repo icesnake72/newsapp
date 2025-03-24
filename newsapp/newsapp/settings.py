@@ -21,11 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # .env 파일 로드
-dotenv_path = os.path.join(BASE_DIR, '.env.dev' if os.getenv('DJANGO_ENV') == 'development' else '.env.prod')
+dotenv_path = os.path.join(BASE_DIR, '.env.prod')
 load_dotenv(dotenv_path)
 
 # 확인
 print("Loaded DB_HOST:", os.getenv('DB_HOST'))  # 서버 시작 시 확인용
+print("Loaded DB_PASSWORD:", os.getenv('DB_PASSWORD'))  # 서버 시작 시 확인용
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -34,7 +35,7 @@ print("Loaded DB_HOST:", os.getenv('DB_HOST'))  # 서버 시작 시 확인용
 SECRET_KEY = 'django-insecure-3z6t2pow3-ba!-$$!7&!)lf5c6_f#1lq9i=e0ht#c$ulw3c@)q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = os.getenv('DEBUG', 'False')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.123.114', '13.125.230.87', '172.26.9.177', 'nginx']  # 허용하는 호스트 설정
 
@@ -53,7 +54,6 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 1800  # 30분 (초 단위)
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
