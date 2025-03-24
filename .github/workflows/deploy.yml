@@ -54,23 +54,13 @@ jobs:
 
       - name: Prepare .env.prod from template
         run: |
-          cat <<EOF > .env.prod.template
-          DJANGO_ENV=production
-          DEBUG=True
-          DB_NAME=\${DB_NAME}
-          DB_USER=\${DB_USER}
-          DB_PASSWORD=\${DB_PASSWORD}
-          DB_HOST=\${DB_HOST}
-          DB_PORT=\${DB_PORT}
-          EOF
-
-          export DB_NAME=${{ secrets.DB_NAME }}
-          export DB_USER=${{ secrets.DB_USER }}
-          export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-          export DB_HOST=${{ secrets.DB_HOST }}
-          export DB_PORT=${{ secrets.DB_PORT }}
-
-          envsubst < .env.prod.template > .env.prod
+          echo "DJANGO_ENV=production" > .env.prod
+          echo "DEBUG=True" >> .env.prod
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env.prod
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env.prod
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env.prod
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env.prod
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env.prod
 
       - name: Copy Docker image to Lightsail
         run: |
