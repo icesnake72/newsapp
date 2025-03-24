@@ -80,11 +80,23 @@ jobs:
 
           INSTANCE_IP=$(jq -r '.accessDetails.ipAddress' instance_details.json)
 
+          echo "Instance details:"
+          cat instance_details.json
+
           # newsapp 이미지와 관련 파일 업로드
           scp -i lightsail_key.pem -o StrictHostKeyChecking=no \
           newsapp.tar newsapp/docker-compose.yml newsapp/nginx.conf .env.prod \
           ubuntu@$INSTANCE_IP:~/newsapp/    
 
+      - name: Stop system nginx
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ubuntu
+          key_path: lightsail_key.pem
+          script: |
+            sudo systemctl stop nginx || true
+            sudo systemctl disable nginx || true
 
       - name: Deploy to Lightsail
         uses: appleboy/ssh-action@master
