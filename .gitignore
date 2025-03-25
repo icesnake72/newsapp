@@ -19,4 +19,6 @@ db_config.json
 newsapp/get_news/config.json
 *.sql
 *.backup
+*.pem*.sql
+*.backup
 *.pem

@@ -1,0 +1,105 @@
+name: Deploy to Lightsail
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  LIGHTSAIL_INSTANCE_NAME: "WebStack01"
+  AWS_REGION: "ap-northeast-2"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Build and tag Docker image
+        working-directory: ./newsapp
+        run: |
+          docker build -t newsapp:${{ github.sha }} .
+          docker save newsapp:${{ github.sha }} > newsapp.tar
+          mv newsapp.tar $GITHUB_WORKSPACE/
+
+      - name: Replace ${TAG} in docker-compose.yml
+        run: |
+          sed -i "s/\${TAG}/${{ github.sha }}/g" newsapp/docker-compose.yml
+  
+
+      - name: Install AWS CLI and Lightsail Plugin
+        run: |
+          echo "Checking AWS CLI version..."
+          aws --version || echo "AWS CLI not found, installing..."
+          
+          echo "Downloading AWS CLI..."
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip -o awscliv2.zip
+          
+          echo "Installing or updating AWS CLI..."s
+          sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+          
+          echo "Verifying AWS CLI installation..."
+          aws --version
+          aws lightsail get-instance --instance-name ${{ env.LIGHTSAIL_INSTANCE_NAME }}
+
+      - name: Prepare .env.prod from base64-encoded secrets
+        run: |
+          {
+            echo "DJANGO_ENV=production"
+            echo "DEBUG=True"
+            echo "DB_NAME=${{ secrets.DB_NAME }}"
+            echo "DB_USER=${{ secrets.DB_USER }}"
+            printf 'DB_PASSWORD="%s"\n' "$(echo "${{ secrets.DB_PASSWORD }}" | base64 -d)"
+            echo "DB_HOST=${{ secrets.DB_HOST }}"
+            echo "DB_PORT=${{ secrets.DB_PORT }}"
+          } > .env.prod
+
+      - name: Copy Docker image to Lightsail
+        run: |
+          aws lightsail get-instance-access-details --instance-name ${{ env.LIGHTSAIL_INSTANCE_NAME }} > instance_details.json
+          echo "${{ secrets.LIGHTSAIL_SSH_KEY }}" > lightsail_key.pem
+          chmod 600 lightsail_key.pem
+
+          INSTANCE_IP=$(jq -r '.accessDetails.ipAddress' instance_details.json)
+
+          echo "Instance details:"
+          cat instance_details.json
+
+          # newsapp 이미지와 관련 파일 업로드
+          scp -i lightsail_key.pem -o StrictHostKeyChecking=no \
+          newsapp.tar newsapp/docker-compose.yml newsapp/nginx.conf .env.prod \
+          ubuntu@$INSTANCE_IP:~/newsapp/    
+
+      - name: Stop system nginx
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ubuntu
+          key_path: lightsail_key.pem
+          script: |
+            sudo systemctl stop nginx || true
+            sudo systemctl disable nginx || true
+
+      - name: Deploy to Lightsail
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ubuntu
+          key_path: lightsail_key.pem  # ✅ 기존에 만든 PEM 파일 사용          
+          script: |
+            cd newsapp
+            export TAG=${{ github.sha }}
+            sudo docker load < newsapp.tar
+            sudo docker-compose -f docker-compose.yml down || true
+            sudo docker-compose -f docker-compose.yml up -d
+            sudo docker-compose -f docker-compose.yml logs
