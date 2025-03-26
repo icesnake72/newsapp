@@ -20,7 +20,7 @@ services:
   web:
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.newsweb
 
     image: news_web:latest
     container_name: news_web
@@ -36,7 +36,7 @@ services:
     networks:
       - mynetwork
     env_file:
-      - .env.prod  
+      - .env.dev
     volumes:
       - static_volume:/app/staticfiles  # 공유 static
       - ./get_news:/app/get_news        # 크롤링 코드 공유
