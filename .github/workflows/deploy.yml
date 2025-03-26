@@ -78,7 +78,7 @@ jobs:
           cat instance_details.json
 
           # newsapp 이미지와 관련 파일 업로드
-          scp -i lightsail_key.pem -o StrictHostKeyChecking=no \
+          scp -i lightsail_key.pem -o StrictHostKeyChecking=no -r \
           newsapp.tar newsapp/docker-compose.yml newsapp/nginx.conf .env.prod \
           newsapp/get_news ubuntu@$INSTANCE_IP:~/newsapp/
 
