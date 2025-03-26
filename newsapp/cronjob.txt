@@ -1,2 +1,2 @@
 # 매일 새벽 3시에 get_news.py 실행
-0 3 * * * /usr/bin/python3 /app/get_news/get_news.py >> /app/logs/get_news.log 2>&1
+0 3 * * * python /app/get_news/get_news.py >> /app/logs/get_news.log 2>&1

@@ -18,7 +18,7 @@ def init_db(db_config):
       config = json.load(f)
       
       conn = connect(
-        host= 'localhost' if os.getenv('DJANGO_ENV')=='development' else config['host'],
+        host= 'db' if os.getenv('DJANGO_ENV')=='development' else config['host'],
         port=config['port'],
         user=config['user'],
         password=config['password'],
