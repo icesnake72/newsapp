@@ -1,31 +1,40 @@
 from pymysql import connect
+from dotenv import load_dotenv
 import json, requests, os
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ENV_DIR = os.path.dirname(BASE_DIR)
 
-DB_CONFIG = os.path.join(BASE_DIR, 'db_config.json') 
+# DB_CONFIG = os.path.join(BASE_DIR, 'db_config.json') 
+# CONFIG_FILE = os.path.join(BASE_DIR, 'config.json')
+
 CATEGORY_FILE = os.path.join(BASE_DIR,'category.json')
-CONFIG_FILE = os.path.join(BASE_DIR, 'config.json')
 
-DEBUG = False
+DEBUG = True
 
+# .env 파일 로드
+dotenv_path = os.path.join(ENV_DIR, '.env.prod' if os.getenv('DJANGO_ENV')=='production' else '.env.dev')
+load_dotenv(dotenv_path)
+print(ENV_DIR)
 print(os.getenv('DJANGO_ENV'))
+print("Loaded DB_HOST:", os.getenv('DB_HOST'))  # 서버 시작 시 확인용
 
-def init_db(db_config):
+
+def init_db():
   try:
-    with open(db_config, 'r', encoding='utf-8') as f:
-      config = json.load(f)
+    # with open(db_config, 'r', encoding='utf-8') as f:
+    #   config = json.load(f)
       
-      conn = connect(
-        host= 'db' if os.getenv('DJANGO_ENV')=='development' else config['host'],
-        port=config['port'],
-        user=config['user'],
-        password=config['password'],
-        database=config['database'],
-      )
-      print('데이터베이스 연결 성공')
-      return conn
+    conn = connect(
+      host= os.getenv('DB_HOST'),
+      port=int(os.getenv('DB_PORT')),
+      user=os.getenv('DB_USER'),
+      password=os.getenv('DB_PASSWORD'),
+      database=os.getenv('DB_NAME'),
+    )
+    print('데이터베이스 연결 성공')
+    return conn
   except Exception as e:
     print(f'Error: {e}')
     return None
@@ -170,7 +179,7 @@ def get_row_count(conn, table_name):
     return None
   
   
-def insert_article(conn, config_file, category):  
+def insert_article(conn, category):  
   try:
     # articles 테이블의 전체 레코드수 가져오기
     old_count = get_row_count(conn, 'articles')
@@ -191,7 +200,7 @@ def insert_article(conn, config_file, category):
     total_page = 0
     
     while True:    
-      url = make_url(config_file, category, page)
+      url = make_url(category, page)
       res = requests.get(url)
       if res.status_code != 200:      
         print('API 호출 실패: ', res.status_code, url)
@@ -249,23 +258,23 @@ def test_query(conn, sql):
   cursor.close()
   
 
-def make_url(config_file, category, page=1):
-  with open(config_file, 'r', encoding='utf-8') as f:
-    res = json.load(f)
-    url = f"https://newsapi.org/v2/top-headlines?country={res['country']}&category={category}&page={page}&apiKey={res['news_api_key']}"
-    return url
+def make_url(category, page=1):
+  # with open(config_file, 'r', encoding='utf-8') as f:
+  # res = json.load(f)
+  url = f"https://newsapi.org/v2/top-headlines?country={os.getenv('COUNTRY_CODE')}&category={category}&page={page}&apiKey={os.getenv('NEWS_API_KEY')}"
+  return url
 
 
 if __name__ == '__main__':  
-  conn = init_db(DB_CONFIG)
+  conn = init_db()
   if conn is not None:        
     insert_category(conn, CATEGORY_FILE)    
     
-    url = f'https://newsapi.org/v2/top-headlines/sources?apiKey={get_api_key(CONFIG_FILE)}'    
+    url = f'https://newsapi.org/v2/top-headlines/sources?apiKey={os.getenv("NEWS_API_KEY")}'    
     insert_source(conn, url)
     
     for id, name in select_all_category(conn):
       # url = make_url(CONFIG_FILE, name)
-      insert_article(conn, CONFIG_FILE, name)    
+      insert_article(conn, name)    
         
     close_db(conn)
