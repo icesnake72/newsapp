@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  LIGHTSAIL_INSTANCE_NAME: "WebStack01"
+  LIGHTSAIL_INSTANCE_NAME: "WebStack02"
   AWS_REGION: "ap-northeast-2"
 
 jobs:
