@@ -50,11 +50,11 @@ ALLOWED_HOSTS = [
 ]  # 허용하는 호스트 설정
 
 # HTTPS 리다이렉션 비활성화
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 
 # 쿠키 보안 설정 비활성화 (HTTP에서도 쿠키 전송 허용)
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 
 # 브라우저 종료 시 세션 만료
