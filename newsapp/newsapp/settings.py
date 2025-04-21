@@ -79,6 +79,8 @@ INSTALLED_APPS = [
     'newsapp',  # 기본앱을 등록시킴
     'accounts', # accounts 앱을 등록시킴
     'channels', # 채널 앱을 등록시킴
+    'django_crontab',
+    'get_news',
 ]
 
 ASGI_APPLICATION = "newsapp.asgi.application"
@@ -189,3 +191,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 print("STATIC_ROOT:", STATIC_ROOT)
 print("DJANGO_ENV:", os.getenv('DJANGO_ENV'))
+
+# 크론잡 설정
+CRONJOBS = [
+    ('0 */6 * * *', 'get_news.get_news.main', '>> /tmp/news_cron.log 2>&1'),
+]

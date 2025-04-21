@@ -267,17 +267,18 @@ def make_url(category, page=1):
   url = f"https://newsapi.org/v2/top-headlines?country={os.getenv('COUNTRY_CODE')}&category={category}&page={page}&apiKey={os.getenv('NEWS_API_KEY')}"
   return url
 
+def main():
+    conn = init_db()
+    if conn is not None:        
+        insert_category(conn, CATEGORY_FILE)    
+        
+        url = f'https://newsapi.org/v2/top-headlines/sources?apiKey={os.getenv("NEWS_API_KEY")}'    
+        insert_source(conn, url)
+        
+        for id, name in select_all_category(conn):
+            insert_article(conn, name)    
+            
+        close_db(conn)
 
 if __name__ == '__main__':  
-  conn = init_db()
-  if conn is not None:        
-    insert_category(conn, CATEGORY_FILE)    
-    
-    url = f'https://newsapi.org/v2/top-headlines/sources?apiKey={os.getenv("NEWS_API_KEY")}'    
-    insert_source(conn, url)
-    
-    for id, name in select_all_category(conn):
-      # url = make_url(CONFIG_FILE, name)
-      insert_article(conn, name)    
-        
-    close_db(conn)
+    main()
