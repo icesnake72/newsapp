@@ -49,10 +49,11 @@ ALLOWED_HOSTS = [
     'mannal.duckdns.org'
 ]  # 허용하는 호스트 설정
 
-# HTTPS 리다이렉션 비활성화
-SECURE_SSL_REDIRECT = True
+# HTTPS 리다이렉션 설정
+SECURE_SSL_REDIRECT = False  # nginx에서 처리하므로 False로 설정
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# 쿠키 보안 설정 비활성화 (HTTP에서도 쿠키 전송 허용)
+# 쿠키 보안 설정
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
