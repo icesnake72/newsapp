@@ -11,15 +11,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 앱 복사
 COPY . .
 
-# 크론 및 슈퍼바이저 설치
-RUN apt-get update && apt-get install -y supervisor cron procps && apt-get clean && rm -rf /var/lib/apt/lists/*
+# supervisor 설치
+RUN apt-get update && apt-get install -y supervisor procps && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# 크론 설정 복사 및 등록
-COPY ./cronjob.txt /etc/cron.d/news_cron
-RUN chmod 0644 /etc/cron.d/news_cron
-COPY ./run_get_news.sh /app/run_get_news.sh
-RUN chmod +x /app/run_get_news.sh 
-RUN crontab /etc/cron.d/news_cron
 # supervisor 설정 복사
 COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
@@ -33,6 +27,3 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 CMD ["/usr/bin/supervisord"]
-# 실행 명령: gunicorn 백엔드와 nginx 동시 실행
-# CMD ["gunicorn", "newsapp.wsgi:application", "--bind", "0.0.0.0:8000"]
-# CMD /bin/sh -c "gunicorn newsapp.wsgi:application --bind 0.0.0.0:8000 & nginx -g 'daemon off;'"
