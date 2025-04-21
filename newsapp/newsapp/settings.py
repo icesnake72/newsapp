@@ -37,7 +37,7 @@ SECRET_KEY = 'django-insecure-3z6t2pow3-ba!-$$!7&!)lf5c6_f#1lq9i=e0ht#c$ulw3c@)q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.123.114', '13.125.230.87', '172.26.9.177', 'nginx']  # 허용하는 호스트 설정
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.123.114', '13.125.230.87', '172.26.9.177', 'nginx', 'mannal.duckdns.org']  # 허용하는 호스트 설정
 
 # HTTPS 리다이렉션 비활성화
 SECURE_SSL_REDIRECT = False
@@ -68,7 +68,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',    
     'newsapp',  # 기본앱을 등록시킴
     'accounts', # accounts 앱을 등록시킴
+    'channels', # 채널 앱을 등록시킴
 ]
+
+ASGI_APPLICATION = "newsapp.asgi.application"
+
+# Redis를 WebSocket 브로커로 사용 (로컬 테스트 시 필수는 아님)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",  # 테스트용
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

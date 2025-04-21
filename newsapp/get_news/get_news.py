@@ -27,8 +27,8 @@ def init_db():
     #   config = json.load(f)
       
     conn = connect(
-      host= os.getenv('DB_HOST'),
-      port=int(os.getenv('DB_PORT')),
+      host= os.getenv('DB_HOST'),   # localhost, 127.0.0.1
+      port=int(os.getenv('DB_PORT')), # 3306
       user=os.getenv('DB_USER'),
       password=os.getenv('DB_PASSWORD'),
       database=os.getenv('DB_NAME'),
@@ -256,6 +256,9 @@ def test_query(conn, sql):
   res = cursor.fetchall() # 결과 가져오기
   print(res)  # 결과 출력
   cursor.close()
+  
+  
+  
   
 
 def make_url(category, page=1):

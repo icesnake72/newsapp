@@ -11,3 +11,7 @@ urllib3==2.3.0
 python-dotenv
 cryptography
 gunicorn
+cffi==1.17.1
+channels==4.2.0
+channels_redis==4.2.1
+charset-normalizer==3.4.1
