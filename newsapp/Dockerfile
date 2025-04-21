@@ -12,12 +12,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # 크론 및 슈퍼바이저 설치
-RUN apt-get update && apt-get install -y supervisor cron && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y supervisor cron procps && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # 크론 설정 복사 및 등록
 COPY ./cronjob.txt /etc/cron.d/news_cron
 RUN chmod 0644 /etc/cron.d/news_cron
-
+COPY ./run_get_news.sh /app/run_get_news.sh
+RUN chmod +x /app/run_get_news.sh 
+RUN crontab /etc/cron.d/news_cron
 # supervisor 설정 복사
 COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
