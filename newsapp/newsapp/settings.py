@@ -37,7 +37,17 @@ SECRET_KEY = 'django-insecure-3z6t2pow3-ba!-$$!7&!)lf5c6_f#1lq9i=e0ht#c$ulw3c@)q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.123.114', '13.125.230.87', '172.26.9.177', 'nginx', 'mannal.duckdns.org']  # 허용하는 호스트 설정
+ALLOWED_HOSTS = [
+    'localhost', 
+    '127.0.0.1', 
+    '192.168.123.114', 
+    '13.125.230.87', 
+    '3.36.55.93', 
+    '172.26.9.177', 
+    '172.26.0.74',
+    'nginx', 
+    'mannal.duckdns.org'
+]  # 허용하는 호스트 설정
 
 # HTTPS 리다이렉션 비활성화
 SECURE_SSL_REDIRECT = False
